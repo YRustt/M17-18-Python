@@ -19,7 +19,7 @@ def print_distribute(hist):
     _max = max(hist)
 
     for i in range(_max):
-        print(''.join(['*' if h >= _max - i else ' ' for h in hist]))
+        print(''.join(['{: ^3}'.format('*' if h >= _max - i else ' ') for h in hist]))
 
 
 if __name__ == '__main__':
@@ -30,4 +30,4 @@ if __name__ == '__main__':
          4, 4, 4, 4,
          5, 5, 5, 5,
          6, 6, 6, 6, 6, 6, 6, 6,
-         7, 7, 7, 7, 7, 7, 7, 7,], 7))
+         7, 7, 7, 7, 7, 7, 7, 7,], 2))

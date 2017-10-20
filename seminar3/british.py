@@ -33,4 +33,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.filename and os.path.exists(args.filename):
-        pass
+        text, is_shuffle = 'Привет, Рустам', True
+    else:
+        text, is_shuffle = args.text, args.is_shuffle
+
+    print(shuffle(text, is_shuffle))
