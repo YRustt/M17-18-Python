@@ -1,5 +1,3 @@
-import numpy
-
 
 def distribute(ar, k):
     _min, _max = min(ar), max(ar)
