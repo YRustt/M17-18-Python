@@ -2,6 +2,7 @@ import os
 import re
 import random
 import argparse
+import codecs
 
 
 def shuffle(text, is_shuffle=True):
@@ -16,7 +17,7 @@ def shuffle(text, is_shuffle=True):
         word[1:-1] = tmp
         return word
 
-    pattern = '[\w\d-]+'
+    pattern = r'[\w\d-]+'
 
     res = list(text)
     for m in re.finditer(pattern, text):
@@ -27,14 +28,16 @@ def shuffle(text, is_shuffle=True):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--text')
-    parser.add_argument('--is_shuffle', type=bool)
-    parser.add_argument('--filename')
+    parser.add_argument('-t', '--text')
+    parser.add_argument('-is', '--is_shuffle', type=bool)
+    parser.add_argument('-f', '--filename')
     args = parser.parse_args()
 
     if args.filename and os.path.exists(args.filename):
-        text, is_shuffle = 'Привет, Рустам', True
+        text = codecs.open(args.filename, encoding='utf-8').read()
     else:
         text, is_shuffle = args.text, args.is_shuffle
+
+    is_shuffle = args.is_shuffle
 
     print(shuffle(text, is_shuffle))
