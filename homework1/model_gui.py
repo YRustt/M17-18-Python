@@ -1,7 +1,10 @@
 
 import sys
 
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import (
+    QCoreApplication,
+    QBasicTimer,
+)
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -23,16 +26,18 @@ from model import (
     Guppies,
     Land,
     Water,
+    Run,
     generate_ocean
 )
 
 
+TIMER = 100
 CELL_SIZE = 10
 MAP_COLOR = {
-    Shark: QColor(0, 0, 128, 128),
-    Guppies: QColor(255, 164, 0, 128),
-    Land: QColor(128, 128, 128, 128),
-    Water: QColor(255, 255, 255, 128)
+    Shark: lambda obj: QColor(0, 0, 128, 255 * obj.fullness / Shark.FULLNESS),
+    Guppies: lambda obj: QColor(255, 164, 0, 255),
+    Land: lambda obj: QColor(128, 128, 128, 255),
+    Water: lambda obj: QColor(255, 255, 255, 255)
 }
 
 
@@ -44,6 +49,9 @@ class OceanUI(QWidget):
         self.initUI()
 
     def initUI(self):
+        self.timer = QBasicTimer()
+        self.timer.start(TIMER, self)
+
         window_size = self.ocean.size * CELL_SIZE
         self.resize(window_size, window_size)
         self.center()
@@ -62,10 +70,14 @@ class OceanUI(QWidget):
 
         for idx, cell in enumerate(self.ocean):
             x, y = divmod(idx, self.ocean.size)
-            qp.setBrush(MAP_COLOR[type(cell)])
+            qp.setBrush(MAP_COLOR[cell.__class__](cell))
             qp.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
 
         qp.end()
+
+    def timerEvent(self, e):
+        Run.run_ocean(self.ocean)
+        self.update()
 
 
 if __name__ == '__main__':
