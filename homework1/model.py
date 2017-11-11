@@ -76,7 +76,7 @@ class Shark:
 
 class Guppies:
     REPRODUCTION = 2
-    LIFE = 50
+    LIFE = 300
 
     def __init__(self, ocean, x, y):
         # type: (Ocean, int, int) -> None
@@ -156,7 +156,6 @@ class Ocean:
     def __init__(self, size=None):
         self._size = size or Ocean.DEFAULT_SIZE
         self._map = [[None] * self._size for _ in range(self._size)]
-        self._time = 0
 
     def __iter__(self):
         for row in self._map:
@@ -169,8 +168,13 @@ class Ocean:
     def set_cell(self, i, j, value):
         self._map[i][j] = value
 
-    def inc_time(self):
-        self._time += 1
+    def is_dead(self):
+        for row in self._map:
+            for cell in row:
+                if isinstance(cell, (Shark, Guppies)):
+                    return False
+
+        return True
 
     @property
     def size(self):
@@ -192,15 +196,25 @@ class Strategy:
             if isinstance(obj, Guppies):
                 Strategy.run_guppies(obj)
 
-        ocean.inc_time()
+        # ocean.inc_time()
 
     @staticmethod
     def run_guppies(obj):
-        Strategy._dead(obj) or Strategy._reproduction(obj) or Strategy._move(obj)
+        Strategy._dead(obj) or \
+        Strategy._reproduction(obj) or \
+        Strategy._move(obj) or \
+        obj.dec_reproduction() or \
+        obj.dec_life()
 
     @staticmethod
     def run_shark(obj):
-        Strategy._dead(obj) or Strategy._reproduction(obj) or Strategy._eat(obj) or Strategy._move(obj)
+        Strategy._dead(obj) or \
+        Strategy._reproduction(obj) or \
+        Strategy._eat(obj) or \
+        Strategy._move(obj) or \
+        obj.dec_reproduction() or \
+        obj.dec_life() or \
+        obj.dec_fullness()
 
     @staticmethod
     def _reproduction(obj):
@@ -218,6 +232,7 @@ class Strategy:
 
                 if isinstance(cell, Water):
                     obj_child = obj.__class__(ocean, new_x, new_y)
+
                     ocean.set_cell(new_x, new_y, obj_child)
 
                     obj.inc_reproduction()
@@ -294,6 +309,10 @@ class Strategy:
         if obj.is_dead():
             ocean.set_cell(x, y, Water())
 
+            return True
+
+        return False
+
 
 def init(filename):
     with open(filename) as f:
@@ -367,3 +386,14 @@ def write_ocean(filename, ocean):
             x, y = divmod(idx, size)
             s = map_class[cell.__class__]
             f.write(s + '\n' if y == size - 1 else s)
+
+
+def run(ocean, num_it):
+    if num_it is not None:
+        for _ in range(num_it):
+            Strategy.run_ocean(ocean)
+    else:
+        while True:
+            Strategy.run_ocean(ocean)
+            if ocean.is_dead():
+                break

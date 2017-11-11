@@ -7,7 +7,8 @@ from model import (
     init,
     generate_ocean,
     read_ocean,
-    write_ocean
+    write_ocean,
+    run
 )
 
 
@@ -49,7 +50,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.config is not None:
-        init(args.config_filename)
+        init(args.config)
 
     if args.read is not None:
         ocean = read_ocean(args.read, args.size)
@@ -58,6 +59,8 @@ if __name__ == '__main__':
 
     if args.gui:
         gui(ocean, args.iterations)
+    else:
+        run(ocean, args.iterations)
 
     if args.write is not None:
         write_ocean(args.write, ocean)
