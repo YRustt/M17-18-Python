@@ -1,0 +1,12 @@
+{
+  "size": 100,
+  "shark": {
+    "fullness": 50,
+    "reproduction": 100,
+    "life": 300
+  },
+  "guppies": {
+    "reproduction": 2,
+    "life": 50
+  }
+}

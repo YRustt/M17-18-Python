@@ -26,7 +26,7 @@ from model import (
     Guppies,
     Land,
     Water,
-    Run,
+    Strategy,
     generate_ocean
 )
 
@@ -34,17 +34,19 @@ from model import (
 TIMER = 100
 CELL_SIZE = 10
 MAP_COLOR = {
-    Shark: lambda obj: QColor(0, 0, 128, 255 * obj.fullness / Shark.FULLNESS),
-    Guppies: lambda obj: QColor(255, 164, 0, 255),
-    Land: lambda obj: QColor(128, 128, 128, 255),
+    Shark: lambda obj: QColor(0, 0, 128, 255 * obj.percent_life()),
+    Guppies: lambda obj: QColor(255, 164, 0, 255 * obj.percent_life()),
+    Land: lambda obj: QColor(51, 102, 0, 255),
     Water: lambda obj: QColor(255, 255, 255, 255)
 }
 
 
-class OceanUI(QWidget):
-    def __init__(self, ocean):
+class OceanGUI(QWidget):
+    def __init__(self, ocean, num_it=None):
         super().__init__()
 
+        self.num_it = num_it
+        self.cur_it = 0
         self.ocean = ocean
         self.initUI()
 
@@ -76,14 +78,15 @@ class OceanUI(QWidget):
         qp.end()
 
     def timerEvent(self, e):
-        Run.run_ocean(self.ocean)
+        Strategy.run_ocean(self.ocean)
         self.update()
+        self.cur_it += 1
+
+        if self.num_it is not None and self.cur_it == self.num_it:
+            self.timer.stop()
 
 
-if __name__ == '__main__':
+def gui(ocean, num_it=None):
     app = QApplication(sys.argv)
-
-    ocean = generate_ocean()
-
-    ocean_ui = OceanUI(ocean)
-    sys.exit(app.exec_())
+    ocean_gui = OceanGUI(ocean, num_it)
+    app.exec_()
