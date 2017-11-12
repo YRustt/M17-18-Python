@@ -3,9 +3,9 @@ import json
 
 
 class Shark:
-    FULLNESS = 15
-    REPRODUCTION = 150
-    LIFE = 300
+    FULLNESS = 20
+    REPRODUCTION = 100
+    LIFE = 250
 
     def __init__(self, ocean, x, y):
         # type: (Ocean, int, int) -> None
@@ -76,7 +76,7 @@ class Shark:
 
 class Guppies:
     REPRODUCTION = 2
-    LIFE = 300
+    LIFE = 200
 
     def __init__(self, ocean, x, y):
         # type: (Ocean, int, int) -> None

@@ -66,7 +66,7 @@ def _comp(token, op):
 
 
 def _pop_operations(token, Q, W):
-    # type: (str, List[token], List[Union[str, Variable]]) -> None
+    # type: (str, List[Variable], List[str]) -> None
 
     while W and _comp(token, W[-1]):
         op = W.pop()
