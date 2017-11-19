@@ -1,6 +1,5 @@
 
 from copy import  deepcopy
-from collections import OrderedDict
 
 
 class DependencyHelper:
@@ -64,8 +63,9 @@ class DependencyHelper:
 
 class PriorityHelper(DependencyHelper):
     def enumerate_priorities(self):
-        flags = dict((key, False) for key in self._graph.keys())
-        answer = dict((key, 0) for key in self._graph.keys())
+        flags = {key: False for key in self._graph.keys()}
+        answer = {key: 0 for key in self._graph.keys()}
+        parents = {}
 
         for key in self._graph.keys():
             if not flags[key]:
@@ -78,11 +78,22 @@ class PriorityHelper(DependencyHelper):
                         flags[v] = 1
 
                         for sv in self._graph[v]:
-                            if flags[sv] != 0 and answer[v] >= answer[sv]:
+                            if flags[sv] == 2 and answer[v] >= answer[sv]:
                                 answer[v] = answer[sv] - 1
 
                         for sv in self._graph[v]:
+                            if flags[sv] == 1 and answer[v] > answer[sv]:
+                                parents[sv] = v
+
+                                s, p = sv, v
+                                while p != sv:
+                                    answer[p] = answer[s]
+                                    s, p = p, parents[p]
+
+                        for sv in self._graph[v]:
                             if flags[sv] == 0:
+                                parents[sv] = v
+
                                 answer[sv] = answer[v] + 1
                                 stack.append(sv)
                     else:
