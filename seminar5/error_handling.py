@@ -1,7 +1,10 @@
 
+import sys
 import logging
+import traceback
 
-logging.basicConfig(filename="handle_error.log", level=logging.ERROR)
+
+logging.basicConfig(filename="error_handling.log", level=logging.ERROR)
 log = logging.getLogger("ex")
 
 
@@ -17,6 +20,7 @@ class handle_error_context:
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self._log_traceback and exc_tb:
             log.exception(exc_tb)
+            traceback.print_tb(exc_tb, file=sys.stdout)
 
         return not self._re_raise if isinstance(exc_val, self._exc_type) else False
 

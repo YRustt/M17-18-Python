@@ -32,6 +32,6 @@ def walk_files(path):
     tree = OrderedDict()
 
     for root, dirs, files in os.walk(path):
-        tree[root] = files + [walk_files(os.path.join(root, d)) for d in dirs]
+        tree[root] = [os.path.join(root, f) for f in files] + [walk_files(os.path.join(root, d)) for d in dirs]
 
     return tree
