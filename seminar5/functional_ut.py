@@ -20,7 +20,7 @@ class ScalarProductTests(TestCase):
 
     def test_3(self):
         expected = 1
-        actual = scalar_product([1, '0x2'], [-1, '01'])
+        actual = scalar_product([1, '0x2'], [-1, '0o1'])
         self.assertEqual(expected, actual)
 
 

@@ -6,10 +6,7 @@ from operator import mul
 
 
 def get_value(obj):
-    try:
-        return int(obj, 0) if isinstance(obj, str) else obj
-    except ValueError:
-        return int(obj, 8)
+    return int(obj, 0) if isinstance(obj, str) else obj
 
 
 def scalar_product(first_iterable, second_iterable):
